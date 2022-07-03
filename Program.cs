@@ -13,19 +13,25 @@ namespace DataDeposit
 
       using (var connection = new SqlConnection(ConnectionString))
       {
+        Guid Id = new Guid("87C967C7-1656-420B-AF02-6B50A4946DDE");
+
         //CreateCategories(connection);
-        UpdateCategories(connection, new Guid("2568524C-FFF5-4F19-B83B-A2908E3E0BC4"), "AWS Cloud Services");
-        //ListCategories(connection);
+        //UpdateCategories(connection, Id, "AWS Cloud Services");
+        //DeleteCategory(connection, Id);
+
+        ListCategories(connection);
       }
     }
 
     static void ListCategories(SqlConnection connection)
     {
-      var categories = connection.Query<Category>("SELECT [Id], [Title] FROM CATEGORY");
+      var listCategories = "SELECT [Id], [Title] FROM CATEGORY";
 
-      foreach (var cat in categories)
+      var categories = connection.Query<Category>(listCategories);
+
+      foreach (var category in categories)
       {
-        Console.WriteLine($"{cat.Id} - {cat.Title}");
+        Console.WriteLine($"{category.Id} - {category.Title}");
       }
     }    
     
@@ -58,9 +64,22 @@ namespace DataDeposit
         Title = Title
       };
 
-      var updateCategory = @"UPDATE [Category] SET [Title]=@Title WHERE [Id]=@Id";
+      var updateCategory = "UPDATE [Category] SET [Title]=@Title WHERE [Id]=@Id";
 
       var rows = connection.Execute(updateCategory, category);
+      Console.WriteLine($"Rows Affected: {rows}");
+    }
+
+    static void DeleteCategory(SqlConnection connection, Guid Id)
+    {
+      var category = new Category
+      {
+        Id = Id
+      };
+
+      var deleteCategory = "DELETE FROM [Category] Where Id = @Id";
+
+      var rows = connection.Execute(deleteCategory, category);
       Console.WriteLine($"Rows Affected: {rows}");
     }
   }
