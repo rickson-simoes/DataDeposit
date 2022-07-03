@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dapper;
 using DataDeposit.Models;
 using Microsoft.Data.SqlClient;
@@ -18,6 +19,7 @@ namespace DataDeposit
         //CreateCategories(connection);
         //UpdateCategories(connection, Id, "AWS Cloud Services");
         //DeleteCategory(connection, Id);
+        CreateManyCategories(connection);
 
         ListCategories(connection);
       }
@@ -33,8 +35,8 @@ namespace DataDeposit
       {
         Console.WriteLine($"{category.Id} - {category.Title}");
       }
-    }    
-    
+    }
+
     static void CreateCategories(SqlConnection connection)
     {
       var category = new Category()
@@ -81,6 +83,36 @@ namespace DataDeposit
 
       var rows = connection.Execute(deleteCategory, category);
       Console.WriteLine($"Rows Affected: {rows}");
+    }
+
+    static void CreateManyCategories(SqlConnection connection)
+    {
+      var category = new List<Category>()
+      {
+        new Category() {
+          Id = Guid.NewGuid(),
+          Title = "Amazon AWS",
+          Url = "Amazon",
+          Summary = "AWS Cloud",
+          Order = 8,
+          Description = "Categoria destinada a serviços do AWS",
+          Featured = false
+        },
+        new Category() {
+          Id = Guid.NewGuid(),
+          Title = "Unity Games",
+          Url = "Unity",
+          Summary = "Desenvolvimento de Jogos",
+          Order = 9,
+          Description = "Categoria destinada a criação de jogos",
+          Featured = true
+        }
+      };
+
+      var query = @"INSERT INTO [Category] values
+      (@Id, @Title, @Url, @Summary, @Order, @Description, @Featured)";
+
+      connection.Execute(query, category);
     }
   }
 }
