@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Dapper;
 using DataDeposit.Models;
 using Microsoft.Data.SqlClient;
@@ -19,7 +20,9 @@ namespace DataDeposit
         //CreateCategories(connection);
         //UpdateCategories(connection, Id, "AWS Cloud Services");
         //DeleteCategory(connection, Id);
-        CreateManyCategories(connection);
+        //CreateManyCategories(connection);
+
+        ExecuteProcedure(connection);
 
         ListCategories(connection);
       }
@@ -113,6 +116,19 @@ namespace DataDeposit
       (@Id, @Title, @Url, @Summary, @Order, @Description, @Featured)";
 
       connection.Execute(query, category);
+    }
+
+    static void ExecuteProcedure(SqlConnection connection)
+    {
+      var procedure = "EXEC [spDeleteStudent] @StudentId";
+
+      var parameters = new { StudentId = "5C5B934B-ADAE-46EB-B834-467BAF50CCAA" };
+
+      var row = connection.Execute(
+        procedure, 
+        parameters);
+
+      Console.WriteLine($"Affected Rows: {row}");
     }
   }
 }
