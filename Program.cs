@@ -22,7 +22,7 @@ namespace DataDeposit
         //DeleteCategory(connection, Id);
         //CreateManyCategories(connection);
 
-        ExecuteProcedure(connection);
+        //ExecuteProcedure(connection);
 
         ListCategories(connection);
       }
