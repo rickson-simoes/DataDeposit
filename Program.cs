@@ -22,7 +22,7 @@ namespace DataDeposit
         //DeleteCategory(connection, Id);
         //CreateManyCategories(connection);
 
-        //ExecuteProcedure(connection);
+        ExecuteProcedure(connection);
 
         ListCategories(connection);
       }
@@ -120,13 +120,14 @@ namespace DataDeposit
 
     static void ExecuteProcedure(SqlConnection connection)
     {
-      var procedure = "EXEC [spDeleteStudent] @StudentId";
+      var procedure = "[spDeleteStudent]";
 
-      var parameters = new { StudentId = "5C5B934B-ADAE-46EB-B834-467BAF50CCAA" };
+      var parameters = new { StudentId = "2362EA27-E741-49A3-BCF8-9317EBBA7420" };
 
       var row = connection.Execute(
         procedure, 
-        parameters);
+        parameters,
+        commandType: CommandType.StoredProcedure);
 
       Console.WriteLine($"Affected Rows: {row}");
     }
