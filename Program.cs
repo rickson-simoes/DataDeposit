@@ -24,9 +24,13 @@ namespace DataDeposit
 
         //ExecuteDeleteProcedure(connection);
 
-        ExecuteListCoursesByCategoryIdProcedure(connection);
+        //ExecuteListCoursesByCategoryIdProcedure(connection);
 
         //ListCategories(connection);
+
+        //ExecuteScalar(connection);
+
+        ReadViewCourse(connection);
       }
     }
 
@@ -145,6 +149,38 @@ namespace DataDeposit
       foreach(var item in courses)
       {
         Console.WriteLine(item.Title);
+      }
+    }
+
+    static void ExecuteScalar(SqlConnection connection)
+    {
+      var category = new Category()
+      {
+        Title = "Teste Category",
+        Url = "Teste",
+        Summary = "Category Teste Summary",
+        Order = 10,
+        Description = "Categoria destinada a testes",
+        Featured = false
+      };
+
+      var insertSQL = @"INSERT INTO Category OUTPUT inserted.[Id]
+                            VALUES(NEWID(), @Title, @Url, @Summary, @Order, @Description, @Featured)";
+
+      var Id = connection.ExecuteScalar<Guid>(insertSQL, category);
+
+      Console.WriteLine($"Exibe o ID que foi inserido: {Id}");
+    }
+
+    static void ReadViewCourse(SqlConnection connection)
+    {
+      var query = "select * from vwCourse";
+
+      var viewCourse = connection.Query(query);
+
+      foreach(var item in viewCourse)
+      {
+        Console.WriteLine($"{item.Id} - {item.Title}");
       }
     }
   }
