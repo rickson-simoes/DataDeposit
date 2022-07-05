@@ -30,7 +30,8 @@ namespace DataDeposit
 
         //ExecuteScalar(connection);
 
-        ReadViewCourse(connection);
+        //ReadViewCourse(connection);
+        OneToOne(connection);
       }
     }
 
@@ -181,6 +182,25 @@ namespace DataDeposit
       foreach(var item in viewCourse)
       {
         Console.WriteLine($"{item.Id} - {item.Title}");
+      }
+    }
+
+    static void OneToOne(SqlConnection connection)
+    {
+      var innerJoinQuery = @"
+          select * from CareerItem 
+          inner join Course on Course.Id = CareerItem.CourseId";
+
+      var CareerItemJoinsCourse = connection.Query<CareerItem, Course, CareerItem>(innerJoinQuery,
+        (careerItem, course) => {
+          careerItem.Course = course;
+
+          return careerItem;
+        }, splitOn: "Id");
+
+      foreach (var item in CareerItemJoinsCourse)
+      {
+        Console.WriteLine($"{item.Title} - Curso: {item.Course.Title}");
       }
     }
   }
