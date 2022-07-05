@@ -22,9 +22,11 @@ namespace DataDeposit
         //DeleteCategory(connection, Id);
         //CreateManyCategories(connection);
 
-        ExecuteProcedure(connection);
+        //ExecuteDeleteProcedure(connection);
 
-        ListCategories(connection);
+        ExecuteListCoursesByCategoryIdProcedure(connection);
+
+        //ListCategories(connection);
       }
     }
 
@@ -118,7 +120,7 @@ namespace DataDeposit
       connection.Execute(query, category);
     }
 
-    static void ExecuteProcedure(SqlConnection connection)
+    static void ExecuteDeleteProcedure(SqlConnection connection)
     {
       var procedure = "[spDeleteStudent]";
 
@@ -130,6 +132,20 @@ namespace DataDeposit
         commandType: CommandType.StoredProcedure);
 
       Console.WriteLine($"Affected Rows: {row}");
+    }
+
+    static void ExecuteListCoursesByCategoryIdProcedure(SqlConnection connection)
+    {
+      var procedureName = "[spGetCoursesByCategory]";
+
+      var parameters = new { CategoryId = "09CE0B7B-CFCA-497B-92C0-3290AD9D5142" }; //backend
+
+      var courses = connection.Query(procedureName, parameters, commandType: CommandType.StoredProcedure); //dinamico
+
+      foreach(var item in courses)
+      {
+        Console.WriteLine(item.Title);
+      }
     }
   }
 }
