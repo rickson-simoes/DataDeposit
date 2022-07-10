@@ -31,12 +31,14 @@ namespace DataDeposit
         //ExecuteScalar(connection);
 
         //ReadViewCourse(connection);
+
         OneToOne(connection);
       }
     }
 
     static void ListCategories(SqlConnection connection)
     {
+
       var listCategories = "SELECT [Id], [Title] FROM CATEGORY";
 
       var categories = connection.Query<Category>(listCategories);
@@ -188,8 +190,8 @@ namespace DataDeposit
     static void OneToOne(SqlConnection connection)
     {
       var innerJoinQuery = @"
-          select * from CareerItem 
-          inner join Course on Course.Id = CareerItem.CourseId";
+          select * from CareerItem as CI
+          inner join Course on Course.Id = CI.CourseId order by [CI].[Order]";
 
       var CareerItemJoinsCourse = connection.Query<CareerItem, Course, CareerItem>(innerJoinQuery,
         (careerItem, course) => {
@@ -200,8 +202,32 @@ namespace DataDeposit
 
       foreach (var item in CareerItemJoinsCourse)
       {
-        Console.WriteLine($"{item.Title} - Curso: {item.Course.Title}");
+        Console.Write($"{item.Title} - ");
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.Write($" Curso: {item.Course.Title} ");        
+        Console.BackgroundColor = ConsoleColor.Red;
+        Console.Write($" {item.Course.Title} ");
+        Console.ResetColor();
+        Console.WriteLine("");
       }
+    }
+
+    static void OneToMany(SqlConnection connection)
+    {
+      /*
+        SELECT 
+            [Career].[Id],
+            [Career].[Title],
+            [CareerItem].[CareerId],
+            [CareerItem].[Title]
+        FROM 
+            [Career] 
+        INNER JOIN 
+            [CareerItem] ON [CareerItem].[CareerId] = [Career].[Id]
+        ORDER BY
+            [Career].[Title]
+       */
+
     }
   }
 }
